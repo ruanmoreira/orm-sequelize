@@ -1,6 +1,7 @@
 const database = require("../models");
 
 class PessoaController {
+  //Achar todos os registros
   static async findAll(req, res) {
     try {
       const pessoas = await database.Pessoas.findAll();
@@ -10,9 +11,10 @@ class PessoaController {
     }
   }
 
+  //Achar um registro especifico 
   static async findByID(req, res) {
+    const { id } = req.params
     try {
-      const { id } = req.params
       const pessoa = await database.Pessoas.findByPk(Number (id));
       return res.status(200).json(pessoa);
     } catch (error) {
@@ -35,7 +37,8 @@ class PessoaController {
     }
   }
 */
-
+  
+  //Criar registro
   static async newPessoa(req, res) {
     const novaPessoa = req.body
     try {
@@ -44,6 +47,30 @@ class PessoaController {
       } catch (error) {
         return res.status(500).json(error.messsage)
       }
+  }
+  
+  //Atualixar registro
+  static async updatePessoa(req, res) {
+    const { id } = req.params
+    const newDatas = req.body
+    try {
+      await database.Pessoas.update(newDatas, {where: {id: Number(id)}});
+      const updatedPessoa = await database.Pessoas.findByPk(Number (id));
+      return res.status(200).json(updatedPessoa);
+    } catch (error) {
+      return res.status(500).json(error.messsage);
+    }
+  }
+
+  //deletar registro
+  static async deleteByID(req, res) {
+    const { id } = req.params
+    try {
+      await database.Pessoas.destroy({where: {id: Number (id)}});
+      return res.status(200).json({mensagem: `id ${id} deletado`});
+    } catch (error) {
+      return res.status(500).json(error.messsage);
+    }
   }
 }
 
